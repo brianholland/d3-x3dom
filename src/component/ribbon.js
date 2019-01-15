@@ -108,10 +108,10 @@ export default function() {
 				.classed("ribbon", true);
 
 			ribbonEnter.append("indexedfaceset")
-				.attr("coordindex", (d) => d.coordindex)
-				.attr("solid", true)
+				.attr("coordindex", function(d) { console.log(d); return d.coordindex; })
+				.attr("solid", "true")
 				.append("coordinate")
-				.attr("point", (d) => d.point);
+				.attr("point", function(d) { console.log(d); return d.point; });
 
 			ribbonEnter.append("appearance")
 				.append("twosidedmaterial")

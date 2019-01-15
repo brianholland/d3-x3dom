@@ -1809,9 +1809,9 @@ function componentRibbon () {
 			var ribbonEnter = ribbon.enter().append("shape").classed("ribbon", true);
 
 			ribbonEnter.append("indexedfaceset").attr("coordindex", function (d) {
-				return d.coordindex;
-			}).attr("solid", true).append("coordinate").attr("point", function (d) {
-				return d.point;
+				console.log(d);return d.coordindex;
+			}).attr("solid", "true").append("coordinate").attr("point", function (d) {
+				console.log(d);return d.point;
 			});
 
 			ribbonEnter.append("appearance").append("twosidedmaterial").attr("diffusecolor", function (d) {
