@@ -3416,7 +3416,7 @@ function chartBubbleChart () {
 }
 
 /**
- * Reusable 3D Crosshair Plot (Experimental) Chart 
+ * Reusable 3D Crosshair Plot (Experimental) Chart
  *
  * @module
  *

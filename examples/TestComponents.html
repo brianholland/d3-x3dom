@@ -46,7 +46,6 @@
 
     var chartComponent = d3.x3dom.component.bars();
     update(chartHolder, chartComponent);
-    // setInterval( function() { update(chartHolder, chartComponent); }, 1000);
 
     document.querySelector('#graphType').addEventListener('change', function() {
       chartComponent = d3.x3dom.component.ribbon();
