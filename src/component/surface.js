@@ -18,7 +18,7 @@ export default function() {
 	let yScale;
 	let zScale;
 	let colorScale;
-	
+
 	let dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
 	/**
@@ -226,7 +226,7 @@ export default function() {
 		colors = _v;
 		return my;
 	};
-	
+
 	/**
 	 * Dispatch Getter / Setter
 	 *
@@ -238,7 +238,7 @@ export default function() {
 		dispatch = _v;
 		return this;
 	};
- 
+
 	/**
 	 * Dispatch On Getter
 	 *

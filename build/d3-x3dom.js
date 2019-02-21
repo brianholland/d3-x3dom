@@ -1263,12 +1263,12 @@ function componentBubbles () {
 
 			bubblesEnter.append("transform").attr("translation", function (d) {
 				return xScale(d.x) + " " + yScale(d.y) + " " + zScale(d.z);
-			}).append("shape").attr("onclick", "d3.x3dom.events.forwardMouseClick(event);").on("click", function (e) {
-				dispatch.call("customClick", this, e);
-			}).attr("onmouseover", "d3.x3dom.events.forwardMouseOver(event);").on("mouseover", function (e) {
-				dispatch.call("customMouseOver", this, e);
-			}).attr("onmouseout", "d3.x3dom.events.forwardMouseOut(event);").on("mouseout", function (e) {
-				dispatch.call("customMouseOut", this, e);
+			}).append("shape").attr("onclick", "d3.x3dom.events.forwardClick(event);").on("click", function (d) {
+				dispatch.call("customClick", this, d);
+			}).attr("onmouseover", "d3.x3dom.events.forwardMouseOver(event);").on("mouseover", function (d) {
+				dispatch.call("customMouseOver", this, d);
+			}).attr("onmouseout", "d3.x3dom.events.forwardMouseOut(event);").on("mouseout", function (d) {
+				dispatch.call("customMouseOut", this, d);
 			}).call(makeSolid, color).append("sphere").attr("radius", function (d) {
 				return sizeScale(d.value);
 			});
@@ -1412,7 +1412,10 @@ function componentBubblesMultiSeries () {
 	var sizeScale = void 0;
 	var sizeDomain = [0.5, 3.0];
 
+	var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
 	/**
+ 	 /**
   * Initialise Data and Scales
   *
   * @private
@@ -1468,7 +1471,7 @@ function componentBubblesMultiSeries () {
 			init(data);
 
 			// Construct Bars Component
-			var bubbles = componentBubbles().xScale(xScale).yScale(yScale).zScale(zScale).sizeScale(sizeScale);
+			var bubbles = componentBubbles().xScale(xScale).yScale(yScale).zScale(zScale).sizeScale(sizeScale).dispatch(dispatch);
 
 			// Create Bar Groups
 			var bubbleGroup = selection.selectAll(".bubbleGroup").data(data);
@@ -1579,6 +1582,28 @@ function componentBubblesMultiSeries () {
 		return my;
 	};
 
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
+		if (!arguments.length) return dispatch();
+		dispatch = _v;
+		return this;
+	};
+
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
+	};
+
 	return my;
 }
 
@@ -1650,7 +1675,7 @@ function componentCrosshair () {
 
 			ball.append("appearance").append("material").attr("diffusecolor", "blue");
 
-			ball.append("sphere").attr("radius", 0.5);
+			ball.append("sphere").attr("radius", 0.3);
 
 			ball.merge(ballSelect);
 
@@ -2225,6 +2250,8 @@ function componentSurface () {
 	var zScale = void 0;
 	var colorScale = void 0;
 
+	var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+
 	/**
   * Array to String
   *
@@ -2419,6 +2446,28 @@ function componentSurface () {
 		if (!arguments.length) return colors;
 		colors = _v;
 		return my;
+	};
+
+	/**
+  * Dispatch Getter / Setter
+  *
+  * @param {d3.dispatch} _v - Dispatch event handler.
+  * @returns {*}
+  */
+	my.dispatch = function (_v) {
+		if (!arguments.length) return dispatch();
+		dispatch = _v;
+		return this;
+	};
+
+	/**
+  * Dispatch On Getter
+  *
+  * @returns {*}
+  */
+	my.on = function () {
+		var value = dispatch.on.apply(dispatch, arguments);
+		return value === dispatch ? my : value;
 	};
 
 	return my;
@@ -4085,15 +4134,15 @@ function chartScatterPlot () {
 			var label = component.label().xScale(xScale).yScale(yScale).zScale(zScale);
 
 			// Construct Bubbles Component
-			var bubbles = component.bubbles().xScale(xScale).yScale(yScale).zScale(zScale).color(color).sizeDomain([0.5, 0.5]).dispatch(dispatch).on("customClick", function (e) {
-				scene.select(".crosshair").datum(d3.select(e.target).datum()).classed("crosshair", true).each(function () {
+			var bubbles = component.bubbles().xScale(xScale).yScale(yScale).zScale(zScale).color(color).sizeDomain([0.5, 0.5]).dispatch(dispatch).on("customClick", function (d) {
+				scene.select(".crosshair").datum(d).classed("crosshair", true).each(function () {
 					d3.select(this).call(crosshair);
 				});
-			}).on("customMouseOver", function (e) {
-				scene.select(".label").datum(d3.select(e.target).datum()).each(function () {
+			}).on("customMouseOver", function (d) {
+				scene.select(".label").datum(d).each(function () {
 					d3.select(this).call(label);
 				});
-			}).on("customMouseOut", function (e) {
+			}).on("customMouseOut", function (d) {
 				scene.select(".label").selectAll("*").remove();
 			});
 
@@ -4924,34 +4973,37 @@ var randomData = Object.freeze({
 	dataset5: dataset5
 });
 
+/**
+ * In x3dom, it is the canvas which captures onclick events, therefore defining a D3 event handler on an single x3dom element does not work.
+ *
+ * A workaround is to define an onclick handler which then forwards the call to the D3 'click' event handler with the event.
+ * Note that x3dom event members differ from D3's, so d3.mouse() function does not work.
+ *
+ * @see https://bl.ocks.org/hlvoorhees/5376764
+ */
+
 var dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
-/**
- * @see https://bl.ocks.org/hlvoorhees/5376764
- *
- * The x3dom canvas captures onclick events, so just defining a 3d event handler on an x3dom element does not work.
- * Hence, clicking the red cube does nothing.
- * A workaround is to define an onclick handler which calls the 3d 'click' event handler with the event, as
- * demonstrated by clicking on the blue sphere. Note that x3dom event members differ from d3's, so d3.mouse()
- * function does not work.
- */
-function forwardMouseClick(event) {
-  var target = d3.select(event.target);
-  target.on('click')(event);
+function forwardClick(event) {
+	var target = d3.select(event.target);
+	var data = target.datum();
+	target.on('click')(data);
 }
 
 function forwardMouseOver(event) {
-  var target = d3.select(event.target);
-  target.on('mouseover')(event);
+	var target = d3.select(event.target);
+	var data = target.datum();
+	target.on('mouseover')(data);
 }
 
 function forwardMouseOut(event) {
-  var target = d3.select(event.target);
-  target.on('mouseout')(event);
+	var target = d3.select(event.target);
+	var data = target.datum();
+	target.on('mouseout')(data);
 }
 
 var events = Object.freeze({
-	forwardMouseClick: forwardMouseClick,
+	forwardClick: forwardClick,
 	forwardMouseOver: forwardMouseOver,
 	forwardMouseOut: forwardMouseOut
 });

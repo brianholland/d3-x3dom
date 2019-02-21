@@ -1,4 +1,3 @@
-
 /**
  * In x3dom, it is the canvas which captures onclick events, therefore defining a D3 event handler on an single x3dom element does not work.
  *
@@ -9,22 +8,22 @@
  */
 import * as d3 from "d3";
 
-export dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
+const dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
 
 export function forwardClick(event) {
 	let target = d3.select(event.target);
-   let data = target.datum();
+	let data = target.datum();
 	target.on('click')(data);
 }
 
 export function forwardMouseOver(event) {
 	let target = d3.select(event.target);
-   let data = target.datum();
+	let data = target.datum();
 	target.on('mouseover')(data);
 }
 
 export function forwardMouseOut(event) {
 	let target = d3.select(event.target);
-   let data = target.datum();
+	let data = target.datum();
 	target.on('mouseout')(data);
 }
