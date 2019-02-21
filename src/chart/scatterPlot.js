@@ -122,22 +122,22 @@ export default function() {
 				.color(color)
 				.sizeDomain([0.5, 0.5])
 				.dispatch(dispatch)
-				.on("customClick", function(e) {
+				.on("customClick", function(d) {
 					scene.select(".crosshair")
-						.datum(d3.select(e.target).datum())
+						.datum(d)
 						.classed("crosshair", true)
 						.each(function() {
 							d3.select(this).call(crosshair);
 						});
 				})
-				.on("customMouseOver", function(e) {
+				.on("customMouseOver", function(d) {
 					scene.select(".label")
-						.datum(d3.select(e.target).datum())
+						.datum(d)
 						.each(function() {
 							d3.select(this).call(label);
 						});
 				})
-				.on("customMouseOut", function(e) {
+				.on("customMouseOut", function(d) {
 					scene.select(".label").selectAll("*").remove();
 				});
 
