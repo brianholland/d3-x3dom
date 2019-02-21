@@ -13,15 +13,18 @@ export dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick"
 
 export function forwardClick(event) {
 	let target = d3.select(event.target);
-	target.on('click')(event);
+   let data = target.datum();
+	target.on('click')(data);
 }
 
 export function forwardMouseOver(event) {
 	let target = d3.select(event.target);
-	target.on('mouseover')(event);
+   let data = target.datum();
+	target.on('mouseover')(data);
 }
 
 export function forwardMouseOut(event) {
 	let target = d3.select(event.target);
-	target.on('mouseout')(event);
+   let data = target.datum();
+	target.on('mouseout')(data);
 }
