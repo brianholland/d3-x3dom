@@ -21,12 +21,12 @@ export default function() {
 	let colorScale;
 	let sizeScale;
 	let sizeDomain = [0.5, 3.0];
-	
+
 	let dispatch = d3.dispatch("customMouseOver", "customMouseOut", "customClick");
- 
-	/**
 
 	/**
+
+	 /**
 	 * Initialise Data and Scales
 	 *
 	 * @private
@@ -87,7 +87,7 @@ export default function() {
 				.yScale(yScale)
 				.zScale(zScale)
 				.sizeScale(sizeScale)
-			  .dispatch(dispatch);
+				.dispatch(dispatch);
 
 			// Create Bar Groups
 			const bubbleGroup = selection.selectAll(".bubbleGroup")
@@ -205,8 +205,8 @@ export default function() {
 		colors = _v;
 		return my;
 	};
-	
-  /**
+
+	/**
 	 * Dispatch Getter / Setter
 	 *
 	 * @param {d3.dispatch} _v - Dispatch event handler.
@@ -217,7 +217,7 @@ export default function() {
 		dispatch = _v;
 		return this;
 	};
- 
+
 	/**
 	 * Dispatch On Getter
 	 *
