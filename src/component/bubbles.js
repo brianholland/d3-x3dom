@@ -90,18 +90,12 @@ export default function() {
 				.append("transform")
 				.attr("translation", (d) => (xScale(d.x) + " " + yScale(d.y) + " " + zScale(d.z)))
 				.append("shape")
-				.attr("onclick", "d3.x3dom.events.forwardMouseClick(event);")
-				.on("click", function(e) {
-					dispatch.call("customClick", this, e);
-				})
+				.attr("onclick", "d3.x3dom.events.forwardClick(event);")
+				.on("click", function(d) { dispatch.call("customClick", this, d); })
 				.attr("onmouseover", "d3.x3dom.events.forwardMouseOver(event);")
-				.on("mouseover", function(e) {
-					dispatch.call("customMouseOver", this, e);
-				})
+				.on("mouseover", function(d) { dispatch.call("customMouseOver", this, d); })
 				.attr("onmouseout", "d3.x3dom.events.forwardMouseOut(event);")
-				.on("mouseout", function(e) {
-					dispatch.call("customMouseOut", this, e);
-				})
+				.on("mouseout", function(d) { dispatch.call("customMouseOut", this, d); })
 				.call(makeSolid, color)
 				.append("sphere")
 				.attr("radius", (d) => sizeScale(d.value));
